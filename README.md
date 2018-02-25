@@ -5,11 +5,12 @@ Little project that helps copying/backing up data from HTTP sources to any kind 
 The basic idea is to fake a directory listing similar to nginx' that rclone can used as a http remote.
 When a file is requested by rclone the response will be a 301 redirect to the real location of the file.
 
-The files present in the listing will be read from a JSON file,
-the destination file name can be controlled to be different from whatever is in the URL.
+The files and directories present in the listing will be created from the file list in the input JSON file. 
+The destination file name can be controlled as well since rclone will use the name of the link,
+rather than what it gets redirected to.
 
-There is support for directories, they are either created from the filename or can be specified directly.
-Filenames should not contain '/' though that will be filtered in case you are specifying a directory manually.
+A '/' in a file name will be interpreted as a directory path unless the directory is manually specified,
+in that case any slashes in the file name will be replaced with underscores.
 
 **Dependencies:**
 * Python 3 (written in a 3.6 env, not tested with anything below)
