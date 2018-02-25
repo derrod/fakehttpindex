@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 from flask import Flask, json, redirect
 from urllib.parse import quote
 
@@ -68,7 +69,18 @@ def get_redirect(path):
 
 
 if __name__ == '__main__':
-    files = json.load(open('files.json'))
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument('-f', '--file', default='files.json',
+                           help='Input file with JSON list of files to include '
+                                'in fake index. (Default: files.json)')
+    argparser.add_argument('-i', '--host', default='127.0.0.1',
+                           help='Host to listen to, e.g. if rclone is '
+                                'run on a different machine (default: 127.0.0.1)')
+    argparser.add_argument('-p', '--port', default=8000, type=int,
+                           help='Port to listen on (default: 8000)')
+    args = argparser.parse_args()
+
+    files = json.load(open(args.file))
     file_map = {}
 
     # Create lookup table for redirector
@@ -99,4 +111,4 @@ if __name__ == '__main__':
 
         file_map[directory][file['filename']] = file
 
-    app.run(port=8000)
+    app.run(host=args.host, port=args.port)
