@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://speed.hetzner.de/100MB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "0.1GB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "test/0.1GB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "test/test/0.1GB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "tester/test2/0.1GB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "filename w/ slash.bin",
+    "directory": "test"
+  }
+]
