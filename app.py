@@ -78,6 +78,8 @@ if __name__ == '__main__':
                                 'run on a different machine (default: 127.0.0.1)')
     argparser.add_argument('-p', '--port', default=8000, type=int,
                            help='Port to listen on (default: 8000)')
+    argparser.add_argument('-k', '--keep-path', action='store_true',
+                           help='Keep path in filename if only url is supplied (default: false)')
     args = argparser.parse_args()
 
     files = json.load(open(args.file))
@@ -88,12 +90,15 @@ if __name__ == '__main__':
         if 'url' not in file:
             continue
 
-        # If no filename is given create one from URL, no directory in this case
+        # If no filename is given create one from URL, optionally keep path
         if 'filename' not in file:
-            file['filename'] = file['url'].split('/')[-1].split('?')[0]
-            directory = ''
+            if file.get('keep_path', False) or args.keep_path:
+                file['filename'] = file['url'].split('/', 3)[3].split('?')[0]
+            else:
+                file['filename'] = file['url'].split('/')[-1].split('?')[0]
+
         # if directory is given also make sure filename does not include /
-        elif 'directory' in file:
+        if 'directory' in file:
             file['filename'] = file['filename'].replace('/', '_')
             directory = file['directory'].strip('/')
         # if only filename is present get directory from there.

@@ -3,6 +3,13 @@
     "url": "https://speed.hetzner.de/100MB.bin"
   },
   {
+    "url": "http://www.ovh.net/files/10Mio.dat"
+  },
+  {
+    "url": "http://www.ovh.net/files/10Mio.dat",
+    "keep_path": true
+  },
+  {
     "url": "https://speed.hetzner.de/100MB.bin",
     "filename": "0.1GB.bin"
   },
