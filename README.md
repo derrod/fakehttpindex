@@ -15,26 +15,47 @@ Filenames should not contain '/' though that will be filtered in case you are sp
 * Python 3 (written in a 3.6 env, not tested with anything below)
 * Flask
 
+### Usage
+Start flask app
+```bash
+$ python3 app.py
+```
+List files using rclone in some other shell
+```bash
+$ rclone ls http:
+104857600 0.1GB.bin
+104857600 100MB.bin
+104857600 tester/test2/0.1GB.bin
+104857600 test/0.1GB.bin
+104857600 test/filename w_ slash.bin
+104857600 test/test/0.1GB.bin
+```
+
+### Config format
 `files.json` format
 ```json
 [
   {
-    "url": "https://example.org/100MB.bin"
+    "url": "https://speed.hetzner.de/100MB.bin"
   },
   {
-    "url": "https://example.org/100MB.bin",
+    "url": "https://speed.hetzner.de/100MB.bin",
     "filename": "0.1GB.bin"
   },
   {
-    "url": "https://example.org/100MB.bin",
+    "url": "https://speed.hetzner.de/100MB.bin",
     "filename": "test/0.1GB.bin"
   },
   {
-    "url": "https://example.org/100MB.bin",
+    "url": "https://speed.hetzner.de/100MB.bin",
     "filename": "test/test/0.1GB.bin"
   },
   {
-    "url": "https://example.org/100MB.bin",
+    "url": "https://speed.hetzner.de/100MB.bin",
+    "filename": "tester/test2/0.1GB.bin"
+  },
+  {
+    "url": "https://speed.hetzner.de/100MB.bin",
     "filename": "filename w/ slash.bin",
     "directory": "test"
   }
