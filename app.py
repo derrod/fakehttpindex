@@ -80,10 +80,19 @@ if __name__ == '__main__':
                            help='Port to listen on (default: 8000)')
     argparser.add_argument('-k', '--keep-path', action='store_true',
                            help='Keep path in filename if only url is supplied (default: false)')
+    argparser.add_argument('-l', '--limit', type=int,
+                           help='Maximum number of items to show in index (for testing)')
+    argparser.add_argument('-o', '--offset', type=int,
+                           help='Offset for items to show in index (for testing)')
     args = argparser.parse_args()
 
     files = json.load(open(args.file))
     file_map = {}
+
+    if args.offset:
+        files = files[args.offset:]
+    if args.limit:
+        files = files[:args.limit]
 
     # Create lookup table for redirector
     for file in files:
