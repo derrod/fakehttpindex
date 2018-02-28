@@ -17,7 +17,7 @@ rather than what it gets redirected to.
 ### Usage
 
 Command line options
-```bash
+```
 $ python3 app.py -h
 usage: app.py [-h] [-f FILE] [-i HOST] [-p PORT] [-k]
 
@@ -30,6 +30,11 @@ optional arguments:
   -p PORT, --port PORT  Port to listen on (default: 8000)
   -k, --keep-path       Keep path in filename if only url is supplied
                         (default: false)
+  -l LIMIT, --limit LIMIT
+                        Maximum number of items to show in index (for testing)
+  -o OFFSET, --offset OFFSET
+                        Offset for items to show in index (for testing)
+
 ```
 
 Run flask app using python
