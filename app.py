@@ -6,6 +6,10 @@ from urllib.parse import quote
 
 app = Flask(__name__)
 
+file_map = {}
+limit = 0
+offset = 0
+input_file = ''
 index_template = """<html>
 <head><title>Index of /</title></head>
 <body bgcolor="white">
@@ -68,31 +72,30 @@ def get_redirect(path):
         return index_template.format(body=links_html)
 
 
-if __name__ == '__main__':
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument('-f', '--file', default='files.json',
-                           help='Input file with JSON list of files to include '
-                                'in fake index. (Default: files.json)')
-    argparser.add_argument('-i', '--host', default='127.0.0.1',
-                           help='Host to listen to, e.g. if rclone is '
-                                'run on a different machine (default: 127.0.0.1)')
-    argparser.add_argument('-p', '--port', default=8000, type=int,
-                           help='Port to listen on (default: 8000)')
-    argparser.add_argument('-k', '--keep-path', action='store_true',
-                           help='Keep path in filename if only url is supplied (default: false)')
-    argparser.add_argument('-l', '--limit', type=int,
-                           help='Maximum number of items to show in index (for testing)')
-    argparser.add_argument('-o', '--offset', type=int,
-                           help='Offset for items to show in index (for testing)')
-    args = argparser.parse_args()
+@app.route('/reload')
+def reload():
+    load_files()
+    return 'Reloaded files.\n', 200
 
-    files = json.load(open(args.file))
-    file_map = {}
 
-    if args.offset:
-        files = files[args.offset:]
-    if args.limit:
-        files = files[:args.limit]
+@app.route('/advance')
+def advance():
+    global offset, limit
+    offset += limit
+    load_files()
+    return f'Advanced by {limit} and reloaded files\n', 200
+
+
+def load_files():
+    global file_map
+
+    file_map = {'': {}}
+    files = json.load(open(input_file))
+
+    if offset:
+        files = files[offset:]
+    if limit:
+        files = files[:limit]
 
     # Create lookup table for redirector
     for file in files:
@@ -125,4 +128,27 @@ if __name__ == '__main__':
 
         file_map[directory][file['filename']] = file
 
+
+if __name__ == '__main__':
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument('-f', '--file', default='files.json',
+                           help='Input file with JSON list of files to include '
+                                'in fake index. (Default: files.json)')
+    argparser.add_argument('-i', '--host', default='127.0.0.1',
+                           help='Host to listen to, e.g. if rclone is '
+                                'run on a different machine (default: 127.0.0.1)')
+    argparser.add_argument('-p', '--port', default=8000, type=int,
+                           help='Port to listen on (default: 8000)')
+    argparser.add_argument('-k', '--keep-path', action='store_true',
+                           help='Keep path in filename if only url is supplied (default: false)')
+    argparser.add_argument('-l', '--limit', type=int, default=0,
+                           help='Maximum number of items to show in index (for testing)')
+    argparser.add_argument('-o', '--offset', type=int, default=0,
+                           help='Offset for items to show in index (for testing)')
+    args = argparser.parse_args()
+
+    limit = args.limit
+    offset = args.offset
+    input_file = args.file
+    load_files()
     app.run(host=args.host, port=args.port)
