@@ -58,7 +58,7 @@ def get_redirect(path):
             if subdirectory.startswith(directory):
                 # remove current directory and deeper directories from name
                 subdirectory = subdirectory[len(directory):]
-                subdir_link = subdirectory.split('/', 1)[0]
+                subdir_link = subdirectory.partition('/')[0]
                 link_html = '<a href="{}/">{}/</a> 01-Jan-1970 00:00 -'.format(subdir_link, subdir_link)
                 if link_html not in links:
                     links.append(link_html)
@@ -105,9 +105,9 @@ def load_files():
         # If no filename is given create one from URL, optionally keep path
         if 'filename' not in file:
             if file.get('keep_path', False) or args.keep_path:
-                file['filename'] = file['url'].split('/', 3)[3].split('?')[0]
+                file['filename'] = file['url'].partition('?')[0].split('/', 3)[3]
             else:
-                file['filename'] = file['url'].split('/')[-1].split('?')[0]
+                file['filename'] = file['url'].partition('?')[0].rpartition('/')[2]
 
         # if directory is given also make sure filename does not include /
         if 'directory' in file:
