@@ -59,7 +59,7 @@ def get_redirect(path):
                 # remove current directory and deeper directories from name
                 subdirectory = subdirectory[len(directory):]
                 subdir_link = subdirectory.partition('/')[0]
-                link_html = '<a href="{}/">{}/</a> 01-Jan-1970 00:00 -'.format(subdir_link, subdir_link)
+                link_html = '<a href="{}/">{}/</a> 01-Jan-1970 00:00 -'.format(quote(subdir_link), subdir_link)
                 if link_html not in links:
                     links.append(link_html)
 
