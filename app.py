@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from random import getrandbits
 import argparse
 from flask import Flask, json, redirect
 from urllib.parse import quote
@@ -9,6 +10,7 @@ app = Flask(__name__)
 file_map = {}
 limit = 0
 offset = 0
+bypass_cache = False
 input_file = ''
 index_template = """<html>
 <head><title>Index of /</title></head>
@@ -38,7 +40,11 @@ def get_redirect(path):
 
     if filename:
         if filename in file_map[directory]:
-            return redirect(file_map[directory][filename]['url'], code=301)
+            if bypass_cache:
+                cache_buster = '{:x}'.format(getrandbits(128))
+                return redirect('?'.join((file_map[directory][filename]['url'], cache_buster)), code=301)
+            else:
+                return redirect(file_map[directory][filename]['url'], code=301)
         else:
             return '', 404
     else:
@@ -141,6 +147,9 @@ if __name__ == '__main__':
                            help='Port to listen on (default: 8000)')
     argparser.add_argument('-k', '--keep-path', action='store_true',
                            help='Keep path in filename if only url is supplied (default: false)')
+    argparser.add_argument('-c', '--cache-bypass', action='store_true',
+                           help='Add random parameters to URLs to attempt bypassing caches '
+                                '(only works when there are no parameters already)')
     argparser.add_argument('-l', '--limit', type=int, default=0,
                            help='Maximum number of items to show in index (for testing)')
     argparser.add_argument('-o', '--offset', type=int, default=0,
@@ -150,5 +159,6 @@ if __name__ == '__main__':
     limit = args.limit
     offset = args.offset
     input_file = args.file
+    bypass_cache = args.cache_bypass
     load_files()
     app.run(host=args.host, port=args.port)
