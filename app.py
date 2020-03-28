@@ -33,6 +33,9 @@ def get_redirect(path):
         return redirect(path + '/', code=301)
 
     directory, _, filename = path.rpartition('/')
+    if directory.endswith('/.'):
+        print('Directory ends with /., removing...')
+        directory = directory[:-2]
 
     # invalid directory
     if directory not in file_map:
